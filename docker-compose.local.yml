@@ -49,7 +49,7 @@ services:
   koa-app:
     build:
       context: .
-      dockerfile: ./dockerfiles/node.16.19.1.slim.Dockerfile
+      dockerfile: ./dockerfiles/node.16.19.1.Dockerfile
     command: "node app.js api -p"
     depends_on:
       - db

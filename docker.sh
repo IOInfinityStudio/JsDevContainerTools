@@ -13,10 +13,13 @@ CMD_JS_RUN="js-run"
 CMD_KOA_RUN="run-koa"
 
 # Service
-CMD_SERVICE_MANGODB="run-mangodb"
+CMD_SERVICE_MANGODB="run-mongodb"
 CMD_SERVICE_LOCALSTACK="run-localstack"
 CMD_SERVICE_LOCALSTACK_CONSOLE="console-localstack"
 CMD_SERVICE_MYSQL="run-mysql"
+
+# Environment
+CMD_ENV_SSH_KEY="update-known-hosts-by-ssh-keyscan"
 
 # https://stackoverflow.com/questions/5474732/how-can-i-add-a-help-method-to-a-shell-script
 usage="
@@ -48,6 +51,10 @@ Commands:
     Koa.js:
        \033[1m"$CMD_KOA_RUN"\033[0m 
             Run Koa.js App container
+    
+    Environment:
+        \033[1m"$CMD_ENV_SSH_KEY"\033[0m 
+            ssh-keyscan {Git cloud providers}  > ~{home}/.ssh/known_hosts
 "
 
 seed=42
@@ -78,6 +85,7 @@ PROJECT_NAME_JS='js-dev'
 DOCKER_FILE="docker-compose.local.yml"
 CMD_DOCKER=" docker-compose -f $DOCKER_FILE "
 CMD_DOCKER_JS_PROJ_RUN=" $CMD_DOCKER run $PROJECT_NAME_JS"
+CMD_DOCKER_JS_PROJ_EXEC=" $CMD_DOCKER exec $PROJECT_NAME_JS"
 
 Command="$1"
 ARGUMENTS="$2"
@@ -100,5 +108,8 @@ elif [ "$CMD_SERVICE_LOCALSTACK_CONSOLE" == "$Command" ]; then
     $CMD_DOCKER exec localstack sh
 elif [ "$CMD_SERVICE_MYSQL" == "$Command" ]; then
     $CMD_DOCKER up db
+elif [ "$CMD_ENV_SSH_KEY" == "$Command" ]; then
+    $CMD_DOCKER_JS_PROJ_RUN  sh -c "ssh-keyscan bitbucket.com > /root/.ssh/known_hosts;"
+    $CMD_DOCKER_JS_PROJ_RUN  sh -c "ssh-keyscan github.com > /root/.ssh/known_hosts;"
 fi
 
